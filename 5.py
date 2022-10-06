@@ -1,25 +1,39 @@
-# Задайте число. Составьте список чисел Фибоначчи, в том числе для отрицательных индексов.
-# Пример:
-# - для k = 8 список будет выглядеть так: [-21 ,13, -8, 5, −3, 2, −1, 1, 0, 1, 1, 2, 3, 5, 8, 13, 21] [Негафибоначчи](https://ru.wikipedia.org/wiki/%D0%9D%D0%B5%D0%B3%D0%B0%D1%84%D0%B8%D0%B1%D0%BE%D0%BD%D0%B0%D1%87%D1%87%D0%B8#:~:text=%D0%92%20%D0%BC%D0%B0%D1%82%D0%B5%D0%BC%D0%B0%D1%82%D0%B8%D0%BA%D0%B5%2C%20%D1%87%D0%B8%D1%81%D0%BB%D0%B0%20%D0%BD%D0%B5%D0%B3%D0%B0%D1%84%D0%B8%D0%B1%D0%BE%D0%BD%D0%B0%D1%87%D1%87%D0%B8%20%E2%80%94%20%D0%BE%D1%82%D1%80%D0%B8%D1%86%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%20%D0%B8%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5%20%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D1%8B%20%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8%20%D1%87%D0%B8%D1%81%D0%B5%D0%BB%20%D0%A4%D0%B8%D0%B1%D0%BE%D0%BD%D0%B0%D1%87%D1%87%D0%B8.)
+# Даны два файла, в каждом из которых находится запись многочлена. Задача - сформировать файл, содержащий сумму многочленов.
 
-def fib(k):
-    if k < 0:
-        if k in [-1]:
-            return 1
-        elif k in [-2]:
-            return -1
-        else:
-            return fib(k+2)-fib(k+1)
-    else:
-        if k in [1, 2]:
-            return 1
-        else:
-            return fib(k-1)+fib(k-2)
+from random import randint
+import itertools
+
+k = randint(2, 7)
+
+def get_ratios(k):
+    ratios = [randint(0, 10) for i in range (k + 1)]
+    while ratios[0] == 0:
+        ratios[0] = randint(1, 10) 
+    return ratios
+
+def get_polynomial(k, ratios):
+    var = ['*x^']*(k-1) + ['*x']
+    polynomial = [[a, b, c] for a, b, c  in itertools.zip_longest(ratios, var, range(k, 1, -1), fillvalue = '') if a !=0]
+    for x in polynomial:
+        x.append(' + ')
+    polynomial = list(itertools.chain(*polynomial))
+    polynomial[-1] = ' = 0'
+    return "".join(map(str, polynomial)).replace(' 1*x',' x')
 
 
-k = int(input('Введите число: '))
-list = []
+ratios = get_ratios(k)
+polynom1 = get_polynomial(k, ratios)
+print(polynom1)
 
-for i in range(-k, k+1):
-    list.append(fib(i))
-print(list)
+with open('poly1.txt', 'w') as data:
+    data.write(polynom1)
+
+
+k = randint(2, 5)
+
+ratios = get_ratios(k) 
+polynom2 = get_polynomial(k, ratios)
+print(polynom2)
+
+with open('poly2.txt', 'w') as data:
+    data.write(polynom2)
